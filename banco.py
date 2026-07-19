@@ -171,4 +171,6 @@ while op != 3:
             conta_logada = login()
             if conta_logada:
                 menu2(conta_logada)
+        case 3:
+            print("Programa encerrado")
         
