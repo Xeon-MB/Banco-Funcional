@@ -3,23 +3,24 @@ import json
 def ver_saldo(conta_logada):
     print(f"O saldo de {conta_logada['nome']} é {conta_logada['saldo']}")
 
-def deposito(conta_logada):
+def deposito(conta_logada, contas):
     valor = int(input("Quanto será depositado? "))
     if valor > 0:
         conta_logada['saldo'] = conta_logada['saldo'] + valor
         print("Deposito Realizado!")
         conta_logada['extrato'].append(f"Depósito de {valor} realizado (+{valor})")
+        salvar_contas(contas)
         
     else:
         print("Deposito negativo")
 
-def saque(conta_logada):
+def saque(conta_logada, contas):
     valor = int(input("Quanto será sacado? "))
     if conta_logada['saldo'] >= valor and valor > 0:
         conta_logada['saldo'] = conta_logada['saldo'] - valor
         print("Saque Realizado")
         conta_logada['extrato'].append(f"Saque de {valor} realizado(-{valor})")
-        json.dump(contas)
+        salvar_contas(contas)
     else:
         print("Saldo insuficiente ou saque negativo")
 
@@ -65,12 +66,13 @@ def login():
          conta_logada = conta
          break
     if conta_logada:
+        print(contas)
         print("Login realizado")
         return conta_logada
     else:
         print("Login incorreto")
 
-def transferencia(conta_logada):
+def transferencia(conta_logada, contas):
     destinatario = input("Para quem você quer tranferir? ")
     valor = float(input("Quanto você quer tranferir? "))
     conta_destino = None
@@ -96,11 +98,13 @@ def transferencia(conta_logada):
             conta_destino['saldo'] = conta_destino['saldo'] + valor
             print("Transferência realizada")
             conta_logada['extrato'].append(f"Tranferencia para {conta_destino['nome']} de {valor} realizada(-{valor})")
+            conta_destino['extrato'].append(f"Transferêcia de {valor} recebida por {conta_logada['nome']} (+{valor})")
+            salvar_contas(contas)
             
         else:
             print("Este usuario não existe")
 
-def ver_contas(dados):
+def ver_contas():
         if len(contas) == 0:
             print("Nenhuma conta cadastrada!")
             return
@@ -111,7 +115,7 @@ def ver_contas(dados):
             print(f"Usuario: {conta['usuario']}")
             print(f"Saldo: {conta['saldo']}")
             print("--------------------------------")
-            print(dados)
+            
 
 def ver_extrato(conta_logada):
     if len(conta_logada['extrato']) == 0:
@@ -123,7 +127,7 @@ def ver_extrato(conta_logada):
 
 
 
-def menu2(conta_logada, dados):
+def menu2(conta_logada, contas):
     op1 = 0
     while op1 != 7:
 
@@ -140,13 +144,13 @@ def menu2(conta_logada, dados):
             case 1:
                 ver_saldo(conta_logada)
             case 2:
-                deposito(conta_logada)
+                deposito(conta_logada, contas)
             case 3:
-                saque(conta_logada)
+                saque(conta_logada, contas)
             case 4:
-                transferencia(conta_logada)
+                transferencia(conta_logada, contas)
             case 5:
-                ver_contas(dados)
+                ver_contas()
             case 6:
                 ver_extrato(conta_logada)
             case 7:
@@ -156,24 +160,28 @@ def salvar_contas(contas):
     with open('dados.json', 'w', encoding='utf-8') as arquivo:
         dados = json.dump(contas, arquivo, indent=4, ensure_ascii=False)
 
-def carregar_contas(dados):
-    json.load(dados)
-    print(dados)
-
-
+def carregar_contas():
+    try:
+        with open('dados.json', 'r', encoding='utf-8') as arquivo:
+            dados = json.load(arquivo)
+            return dados
+    except FileNotFoundError:
+        return []
+    except json.JSONDecodeError:
+        return []
 
 
 
 
 
 op = 0
-contas = []
-dados = None
+contas = carregar_contas()
+print(contas)
+
 
 
 while op != 3:
-    with open('dados.json', 'r', encoding='utf-8') as arquivo:
-        contas = json.load(arquivo)
+    
     print("Banco")
 
     print("1 - Criar conta")
@@ -189,7 +197,7 @@ while op != 3:
 
             conta_logada = login()
             if conta_logada:
-                menu2(conta_logada, dados)
+                menu2(conta_logada, contas)
         case 3:
             print("Programa encerrado")
         
