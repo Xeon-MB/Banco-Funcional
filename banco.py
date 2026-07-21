@@ -66,7 +66,6 @@ def login():
          conta_logada = conta
          break
     if conta_logada:
-        print(contas)
         print("Login realizado")
         return conta_logada
     else:
@@ -171,15 +170,8 @@ def carregar_contas():
         return []
 
 
-
-
-
 op = 0
 contas = carregar_contas()
-print(contas)
-
-
-
 while op != 3:
     
     print("Banco")
