@@ -51,6 +51,7 @@ def addconta():
             "extrato": []
             }
                 contas.append(conta)
+                salvar_contas(contas)
                 
         
                 print("conta Criada!")
@@ -99,7 +100,7 @@ def transferencia(conta_logada):
         else:
             print("Este usuario não existe")
 
-def ver_contas():
+def ver_contas(dados):
         if len(contas) == 0:
             print("Nenhuma conta cadastrada!")
             return
@@ -110,6 +111,7 @@ def ver_contas():
             print(f"Usuario: {conta['usuario']}")
             print(f"Saldo: {conta['saldo']}")
             print("--------------------------------")
+            print(dados)
 
 def ver_extrato(conta_logada):
     if len(conta_logada['extrato']) == 0:
@@ -121,7 +123,7 @@ def ver_extrato(conta_logada):
 
 
 
-def menu2(conta_logada):
+def menu2(conta_logada, dados):
     op1 = 0
     while op1 != 7:
 
@@ -144,7 +146,7 @@ def menu2(conta_logada):
             case 4:
                 transferencia(conta_logada)
             case 5:
-                ver_contas()
+                ver_contas(dados)
             case 6:
                 ver_extrato(conta_logada)
             case 7:
@@ -154,6 +156,10 @@ def salvar_contas(contas):
     with open('dados.json', 'w', encoding='utf-8') as arquivo:
         dados = json.dump(contas, arquivo, indent=4, ensure_ascii=False)
 
+def carregar_contas(dados):
+    json.load(dados)
+    print(dados)
+
 
 
 
@@ -162,9 +168,12 @@ def salvar_contas(contas):
 
 op = 0
 contas = []
+dados = None
+
 
 while op != 3:
-
+    with open('dados.json', 'r', encoding='utf-8') as arquivo:
+        contas = json.load(arquivo)
     print("Banco")
 
     print("1 - Criar conta")
@@ -176,12 +185,11 @@ while op != 3:
     match op:
         case 1:
             addconta()
-            salvar_contas(contas)
         case 2:
 
             conta_logada = login()
             if conta_logada:
-                menu2(conta_logada)
+                menu2(conta_logada, dados)
         case 3:
             print("Programa encerrado")
         
