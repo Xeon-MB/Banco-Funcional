@@ -1,0 +1,16 @@
+[
+    {
+        "nome": "asd",
+        "usuario": "asd",
+        "senha": "123",
+        "saldo": 1000,
+        "extrato": []
+    },
+    {
+        "nome": "wqe",
+        "usuario": "qwe",
+        "senha": "123",
+        "saldo": 1000,
+        "extrato": []
+    }
+]

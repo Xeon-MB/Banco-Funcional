@@ -1,3 +1,5 @@
+import json
+
 def ver_saldo(conta_logada):
     print(f"O saldo de {conta_logada['nome']} é {conta_logada['saldo']}")
 
@@ -7,6 +9,7 @@ def deposito(conta_logada):
         conta_logada['saldo'] = conta_logada['saldo'] + valor
         print("Deposito Realizado!")
         conta_logada['extrato'].append(f"Depósito de {valor} realizado (+{valor})")
+        
     else:
         print("Deposito negativo")
 
@@ -16,6 +19,7 @@ def saque(conta_logada):
         conta_logada['saldo'] = conta_logada['saldo'] - valor
         print("Saque Realizado")
         conta_logada['extrato'].append(f"Saque de {valor} realizado(-{valor})")
+        json.dump(contas)
     else:
         print("Saldo insuficiente ou saque negativo")
 
@@ -47,6 +51,7 @@ def addconta():
             "extrato": []
             }
                 contas.append(conta)
+                
         
                 print("conta Criada!")
 
@@ -90,6 +95,7 @@ def transferencia(conta_logada):
             conta_destino['saldo'] = conta_destino['saldo'] + valor
             print("Transferência realizada")
             conta_logada['extrato'].append(f"Tranferencia para {conta_destino['nome']} de {valor} realizada(-{valor})")
+            
         else:
             print("Este usuario não existe")
 
@@ -144,6 +150,10 @@ def menu2(conta_logada):
             case 7:
                 print("Logout Realizado")
 
+def salvar_contas(contas):
+    with open('dados.json', 'w', encoding='utf-8') as arquivo:
+        dados = json.dump(contas, arquivo, indent=4, ensure_ascii=False)
+
 
 
 
@@ -166,6 +176,7 @@ while op != 3:
     match op:
         case 1:
             addconta()
+            salvar_contas(contas)
         case 2:
 
             conta_logada = login()
